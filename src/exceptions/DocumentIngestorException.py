@@ -21,15 +21,14 @@ class DocumentSplittingException(BaseProjectException):
         super().__init__(error_msg, error_code="DOCUMENT_SPLIT_ERROR")
 
 
-class EmbeddingGenerationException(BaseProjectException):
-    """Exception raised when embedding generation fails."""
-    
-    def __init__(self, message: str):
-        super().__init__(message, error_code="EMBEDDING_ERROR")
-
-
 class VectorStorageException(BaseProjectException):
     """Exception raised when vector storage operation fails."""
     
     def __init__(self, message: str):
         super().__init__(message, error_code="VECTOR_STORAGE_ERROR")
+
+class SaveDataException(BaseProjectException):
+    """Exception raised when saving processed data fails."""
+    
+    def __init__(self, message: str):
+        super().__init__(message, error_code="SAVE_DATA_ERROR")

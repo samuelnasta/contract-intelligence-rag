@@ -2,7 +2,6 @@ import logging
 import logging.handlers
 from pathlib import Path
 
-
 class Logger:
     """A logger class for the contract intelligence RAG project."""
     
@@ -10,7 +9,12 @@ class Logger:
     _initialized = False
 
     def __new__(cls):
-        """Implement singleton pattern to ensure only one logger instance."""
+        """Implement singleton pattern to ensure only one logger instance.
+        Args:
+            cls: The Logger class
+        Returns:
+            The singleton Logger instance
+        """
         if cls._instance is None:
             cls._instance = super(Logger, cls).__new__(cls)
         return cls._instance
@@ -65,23 +69,38 @@ class Logger:
         Logger._initialized = True
     
     def debug(self, message: str) -> None:
-        """Log debug message."""
+        """Log debug message.
+        Args:
+            message: The debug message to log
+        """
         self.logger.debug(message)
     
     def info(self, message: str) -> None:
-        """Log info message."""
+        """Log info message.
+        Args:
+            message: The debug message to log
+        """
         self.logger.info(message)
     
     def warning(self, message: str) -> None:
-        """Log warning message."""
+        """Log warning message.
+        Args:
+            message: The debug message to log
+        """
         self.logger.warning(message)
     
     def error(self, message: str) -> None:
-        """Log error message."""
+        """Log error message.
+        Args:
+            message: The debug message to log
+        """
         self.logger.error(message)
     
     def critical(self, message: str) -> None:
-        """Log critical message."""
+        """Log critical message.
+        Args:
+            message: The debug message to log
+        """
         self.logger.critical(message)
 
 
