@@ -3,6 +3,7 @@ import os
 import chromadb
 from langchain_groq import ChatGroq  
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from .Logger import get_logger
 from .exceptions import DBConnectionException, DocumentRetrieveException, ModelResponseException, RAGQueryException
@@ -23,6 +24,14 @@ class ModelQuery:
         self.chroma_host = chroma_host
         self.chroma_port = chroma_port
         
+        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        
+        self.llm_client = ChatGroq(
+            temperature=0, 
+            model="llama-3.1-8b-instant", 
+            api_key=os.getenv("GROQ_API_KEY")  # type: ignore
+        )
+
         try:
             # Connect to ChromaDB client (HTTP client for remote connection)
             self.client = chromadb.HttpClient(
@@ -57,9 +66,10 @@ class ModelQuery:
             # Get or create collection
             collection = self.client.get_collection(name=collection_name)
             
-            # Query the collection
+            query_vector = self.embeddings.embed_query(query)
+
             results = collection.query(
-                query_texts=[query],
+                query_embeddings=[query_vector], 
                 n_results=top_k
             )
             
@@ -83,8 +93,7 @@ class ModelQuery:
     def generate_llm_response(
         self, 
         query: str, 
-        context: List[Dict[str, Any]], 
-        llm_client
+        context: List[Dict[str, Any]]
     ):
         """
         Generate LLM response based on retrieved context.
@@ -105,8 +114,6 @@ class ModelQuery:
                 for i, doc in enumerate(context)
             ])
             
-            llm_client = ChatGroq(temperature=0, model="llama-3.1-8b-instant", api_key=os.getenv("GROQ_API_KEY")) # type: ignore
-
             system_prompt = "You are a legal assistant. Use the following context to answer the question. If you don't know, say you don't know."
     
             prompt_template = ChatPromptTemplate.from_messages([
@@ -114,7 +121,7 @@ class ModelQuery:
                 ("human", "Context:\n{context}\n\nQuestion: {question}")
             ])
 
-            chain = prompt_template | llm_client
+            chain = prompt_template | self.llm_client
 
             response = chain.invoke({
                 "context": context_str,
@@ -122,7 +129,7 @@ class ModelQuery:
             })
                     
             self.logger.info("LLM response generated successfully")
-            return response
+            return response.content
             
         except Exception as e:
             self.logger.error(f"Error generating LLM response: {e}")
@@ -132,7 +139,6 @@ class ModelQuery:
         self, 
         query: str, 
         collection_name: str = "documents",
-        llm_client=None,
         top_k: int = 5
     ) -> Dict[str, Any]:
         """
@@ -158,7 +164,7 @@ class ModelQuery:
             )
             
             # Generate response
-            response = self.generate_llm_response(query, context, llm_client)
+            response = self.generate_llm_response(query, context)
             
             result = {
                 "query": query,

@@ -19,6 +19,14 @@ from .ModelQueryException import (
     DBConnectionException
 )
 
+from .DatabaseManagerException import (
+    DatabaseConnectionException,
+    IngestionRegistrationException,
+    IngestionStatusUpdateException,
+    DatabaseTableCreationException,
+    IngestionTableCleanException
+)
+
 __all__ = [
     "UtilsException",
     "MetadataExtractionException",
@@ -30,5 +38,10 @@ __all__ = [
     "DocumentRetrieveException",
     "ModelResponseException",
     "RAGQueryException",
-    "DBConnectionException"
+    "DBConnectionException",
+    "DatabaseConnectionException",
+    "IngestionRegistrationException",
+    "IngestionStatusUpdateException",
+    "DatabaseTableCreationException",
+    "IngestionTableCleanException"
 ]
