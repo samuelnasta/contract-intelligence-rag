@@ -1,10 +1,4 @@
-"""
-Main Application Module
-Orchestrates document ingestion from raw data directory.
-"""
-
 import os
-from pathlib import Path
 from typing import List
 
 from .Logger import get_logger
@@ -22,11 +16,14 @@ class App:
 
     def __init__(self, raw_data_dir: str = "data/raw", db_path: str = "chroma/data"):
         """
-        Initialize the App.
+        Initialize the App with configuration parameters.
         
         Args:
-            raw_data_dir: Directory containing raw PDF files
-            db_path: Path to the vector database directory
+            raw_data_dir: Directory containing raw PDF files. Defaults to "data/raw".
+            db_path: Path to the vector database directory. Defaults to "chroma/data".
+            
+        Returns:
+            None
         """
         self.logger = get_logger()
         self.raw_data_dir = raw_data_dir
@@ -38,8 +35,12 @@ class App:
         """
         Get all PDF files from the raw data directory.
         
+        Args:
+            None
+        
         Returns:
-            List of PDF file paths
+            List[str]: List of absolute paths to PDF files found in raw_data_dir.
+            Returns empty list if directory doesn't exist.
         """
         if not os.path.exists(self.raw_data_dir):
             self.logger.error(f"Raw data directory not found: {self.raw_data_dir}")
@@ -59,10 +60,13 @@ class App:
         Process a single document using DocumentIngestor.
         
         Args:
-            file_path: Path to the PDF file to process
+            file_path: Absolute or relative path to the PDF file to process.
             
         Returns:
-            True if successful, False otherwise
+            bool: True if ingestion completed successfully, False otherwise.
+            
+        Raises:
+            None (exceptions are caught and logged internally)
         """
         try:
             self.logger.info(f"Starting processing for: {file_path}")
@@ -78,6 +82,15 @@ class App:
     def run(self) -> None:
         """
         Main execution method that processes all PDF files in the raw data directory.
+        
+        Args:
+            None
+            
+        Returns:
+            None
+            
+        Raises:
+            None (exceptions are logged, returns early if no files found)
         """
         self.logger.info("=" * 60)
         self.logger.info("Starting Contract Intelligence RAG Application")
@@ -107,7 +120,18 @@ class App:
 
 
 def main():
-    """Entry point for the application."""
+    """
+    Entry point for the application.
+    
+    Args:
+        None
+        
+    Returns:
+        None
+        
+    Raises:
+        Exception: Propagates any critical errors encountered during execution.
+    """
     try:
         app = App(raw_data_dir="data/raw", db_path="chroma/data")
         app.run()
