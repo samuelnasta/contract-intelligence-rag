@@ -5,6 +5,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
+from chromadb import HttpClient
 
 from .exceptions.DocumentIngestorException import (
     DocumentLoadingException,
@@ -58,6 +59,7 @@ class DocumentIngestor:
             SaveDataException: If saving processed data to JSON fails.
         """
         # create the db if not exists
+        self.db_manager.clean_ingestion_table() # TODO
         self.db_manager.create_ingestion_table()
         
         # create the file hasj
@@ -98,7 +100,7 @@ class DocumentIngestor:
 
         except Exception as e:
             self.logger.error(f"Error splitting document {self.file_path}: {e}")
-            self.db_manager     .update_ingestion_status(doc_id, "FAILED", error_msg=str(e))
+            self.db_manager.update_ingestion_status(doc_id, "FAILED", error_msg=str(e))
             raise DocumentSplittingException(str(e), self.file_path) from e
         
         # Save a copy to processed for auditing and re-ingestion
@@ -106,12 +108,17 @@ class DocumentIngestor:
 
         try:
             self.logger.info("Generating embeddings and storing in vector database.")
-            # Store in vector database
-            Chroma.from_documents(
-                documents=chunks,
-                embedding=self.embeddings,
-                persist_directory=self.db_path
-            )
+
+            client = HttpClient(host="localhost", port=8001)
+
+            chroma_db = Chroma(
+                    client=client,
+                    collection_name="documents",
+                    embedding_function=self.embeddings
+                )
+            
+            chroma_db.add_documents(documents=chunks)
+
             self.logger.info(f"Ingestion completed: {len(chunks)} chunks stored.")
             
         except Exception as e:
@@ -159,7 +166,7 @@ class DocumentIngestor:
             return output_path
 
         except Exception as e:
-            self.logger.error(f"Couldn't store the processed data into json.: {e}")
+            self.logger.error(f"Could not store the processed data into JSON: {e}")
             raise SaveDataException(str(e)) from e
         
 

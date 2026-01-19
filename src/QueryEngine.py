@@ -9,12 +9,12 @@ from .Logger import get_logger
 from .exceptions import DBConnectionException, DocumentRetrieveException, ModelResponseException, RAGQueryException
 
 
-class ModelQuery:
+class QueryEngine:
     """Class to handle model querying and document retrieval from ChromaDB."""
 
     def __init__(self, chroma_host: str = "localhost", chroma_port: int = 8001) -> None:
         """
-        Initialize the ModelQuery with ChromaDB connection.
+        Initialize the QueryEngine with ChromaDB connection.
         
         Args:
             chroma_host: ChromaDB server host (default: localhost)
