@@ -16,10 +16,11 @@ jobs:
         ports:
           - 8001:8000
         options: >-
-          --health-cmd "curl -f http://localhost:8000/api/v1/heartbeat || exit 1"
+          --health-cmd "timeout 5s bash -c ': </dev/tcp/127.0.0.1/8000' || exit 1"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
 
     steps:
     - name: Checkout code
@@ -43,4 +44,5 @@ jobs:
         CHROMA_HOST: localhost
         CHROMA_PORT: 8001
       run: |
+        sleep 10
         pytest tests/
