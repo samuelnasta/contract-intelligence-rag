@@ -205,3 +205,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+chroma/data/9c78fb07-511a-4f5c-886c-43561a390bad/length.bin
+chroma/data/9c78fb07-511a-4f5c-886c-43561a390bad/header.bin
+chroma/data/9c78fb07-511a-4f5c-886c-43561a390bad/data_level0.bin
+chroma/data/chroma.sqlite3
+chroma/data/9c78fb07-511a-4f5c-886c-43561a390bad/link_lists.bin
