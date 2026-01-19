@@ -308,7 +308,8 @@ docker-compose up -d
 
 ### Running the Application
 
-**Prerequisites:** * Linux Environment
+**Prerequisites:** 
+* Linux Environment
 * CPython 3.12.3
 * Docker & Docker Compose installed
 
