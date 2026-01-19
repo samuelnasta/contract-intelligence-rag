@@ -86,8 +86,6 @@ contract-intelligence-rag/
 │
 ├── logs/                             # Application logs
 │
-├── notebooks/                        # Jupyter notebooks for exploration
-│
 ├── docker-compose.yml                # Docker services configuration
 ├── requirements.txt                  # Python dependencies
 └── README.md                         # Project overview
@@ -310,18 +308,25 @@ docker-compose up -d
 
 ### Running the Application
 
-```python
-from src.App import App
+**Prerequisites:** * Linux Environment
+* CPython 3.12.3
+* Docker & Docker Compose installed
 
-# Initialize application
-app = App(raw_data_dir="data/raw", db_path="chroma/data")
+#### 1. Start Infrastructure
+Before launching the API, you must start the vector database and metadata storage services:
 
-# Get PDF files
-pdfs = app.get_pdf_files()
-
-# Process documents
-# ... implementation
+```bash
+# Start ChromaDB and PostgreSQL in the background
+docker-compose up -d
 ```
+
+Now we can slunch the app:
+```bash
+# Start the server on port 8000
+uvicorn src.ApiCommunication:app --reload --host 0.0.0.0 --port 8000
+```
+
+#### Once the server is running, you can access the interactive documentation at Swagger UI: http://localhost:8000/docs
 
 ---
 
@@ -460,7 +465,7 @@ BaseProjectException (root)
 
 ### Environment Variables
 ```bash
-POSTGRES_USER=samuel
+POSTGRES_USER=<your_db_user>
 POSTGRES_PASSWORD=<your_secure_password>
 GROQ_API_KEY=<your_groq_api_key>
 HUGGINGFACE_API_KEY=<optional>
@@ -528,70 +533,15 @@ results = engine.query("What are the payment terms?")
 
 ---
 
-## 🚨 Troubleshooting
-
-### Common Issues
-
-**PostgreSQL Connection Failed**
-- Check container status: `docker ps`
-- Verify credentials in `.env`
-- Check port 5432 availability
-
-**ChromaDB Not Responding**
-- Restart service: `docker-compose restart chromadb`
-- Check volume permissions
-- Verify port 8001 is accessible
-
-**PDF Processing Errors**
-- Validate PDF format compatibility
-- Check file permissions
-- Review logs in `logs/` directory
-
-**Low Query Relevance**
-- Verify embeddings are generated correctly
-- Check chunk size configuration
-- Review document metadata
-
----
-
-## 📝 Contributing
-
-### Code Style
-- Follow PEP 8 guidelines
-- Use type hints for functions
-- Comprehensive docstrings
-- Clear error messages
-
-### Testing Requirements
-- Write tests for new features
-- Maintain >80% coverage
-- Run tests before commits
-
-### Git Workflow
-```bash
-# Create feature branch
-git checkout -b feature/your-feature
-
-# Commit changes
-git commit -m "feat: description"
-
-# Push and create PR
-git push origin feature/your-feature
-```
-
----
-
 ## 📄 License
 
-This project is licensed under [specify your license].
+This project is licensed under OSL-3.0.
 
 ---
 
 ## 👤 Author
 
-Samuel Valer Nasta
-Linkedin: [text](https://www.linkedin.com/in/samuelnasta/)
-Project: Contract Intelligence RAG  
+Linkedin: [Samuel Valer Nasta](https://www.linkedin.com/in/samuelnasta/)
 Repository: `/home/samuel/proyects/contract-intelligence-rag`
 
 ---
