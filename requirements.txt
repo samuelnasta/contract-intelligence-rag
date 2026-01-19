@@ -23,4 +23,3 @@ python-dotenv==1.0.1
 pandas==2.2.2
 requests==2.31.0
 pytest==9.0.2
-psycopg2-binary==2.9.11
