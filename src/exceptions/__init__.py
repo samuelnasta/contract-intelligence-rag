@@ -12,7 +12,7 @@ from .DocumentIngestorException import (
     SaveDataException
 )
 
-from .ModelQueryException import (
+from .QueryEngineException import (
    DocumentRetrieveException,
     ModelResponseException, 
     RAGQueryException,
