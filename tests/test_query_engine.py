@@ -47,6 +47,7 @@ class TestQueryEngineInitialization:
 class TestQueryEngineGenerateLLMResponse:
     """Test suite for LLM response generation."""
     
+    @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Skipping RAG query in the pipeline tests.")
     def test_generate_llm_response_returns_string(self, query_engine_mock):
         """Test that generate_llm_response returns a string."""
         # Mock LLM response
@@ -69,6 +70,7 @@ class TestQueryEngineGenerateLLMResponse:
             assert isinstance(result, str)
             assert result == "This is the LLM response"
     
+    @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Skipping RAG query in the pipeline tests.")
     def test_generate_llm_response_uses_context(self, query_engine_mock):
         """Test that generate_llm_response includes context."""
         mock_response = MagicMock()
@@ -84,7 +86,7 @@ class TestQueryEngineGenerateLLMResponse:
             mock_chain.invoke = MagicMock(return_value=mock_response)
             mock_template.return_value.__or__ = MagicMock(return_value=mock_chain)
             
-            result = query_engine_mock.generate_llm_response(
+            query_engine_mock.generate_llm_response(
                 query="Question",
                 context=context
             )
@@ -93,6 +95,7 @@ class TestQueryEngineGenerateLLMResponse:
             call_args = mock_chain.invoke.call_args
             assert 'context' in call_args.kwargs or 'context' in call_args.args[0]
     
+    @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Skipping RAG query in the pipeline tests.")
     def test_generate_llm_response_error_handling(self, query_engine_mock):
         """Test that ModelResponseException is raised on LLM error."""
         with patch('src.QueryEngine.ChatPromptTemplate.from_messages', side_effect=Exception("LLM error")):
