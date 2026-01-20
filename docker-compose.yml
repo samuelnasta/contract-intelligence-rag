@@ -1,0 +1,43 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: contract-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: contract_rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U samuel"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ChromaDB Vector Database (stable version)
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: contract-chromadb
+    ports:
+      - "8001:8000"
+    environment:
+      CHROMA_DB_IMPL: duckdb+parquet
+      PERSIST_DIRECTORY: /chroma/data
+    volumes:
+      - chroma_data:/chroma/data
+
+  # Adminer for database visualization
+  adminer:
+    image: adminer:latest
+    container_name: contract-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  chroma_data:
