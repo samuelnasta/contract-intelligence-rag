@@ -8,23 +8,8 @@ from .UtilsException import (
 from .DocumentIngestorException import (
     DocumentLoadingException,
     DocumentSplittingException,
-    VectorStorageException,
-    SaveDataException
-)
-
-from .QueryEngineException import (
-   DocumentRetrieveException,
-    ModelResponseException, 
-    RAGQueryException,
-    DBConnectionException
-)
-
-from .DatabaseManagerException import (
-    DatabaseConnectionException,
-    IngestionRegistrationException,
-    IngestionStatusUpdateException,
-    DatabaseTableCreationException,
-    IngestionTableCleanException
+    EmbeddingGenerationException,
+    VectorStorageException
 )
 
 __all__ = [
@@ -32,16 +17,7 @@ __all__ = [
     "MetadataExtractionException",
     "DocumentLoadingException",
     "DocumentSplittingException",
+    "EmbeddingGenerationException",
     "VectorStorageException",
-    "SaveDataException",
-    "InvalidFileFormatException",
-    "DocumentRetrieveException",
-    "ModelResponseException",
-    "RAGQueryException",
-    "DBConnectionException",
-    "DatabaseConnectionException",
-    "IngestionRegistrationException",
-    "IngestionStatusUpdateException",
-    "DatabaseTableCreationException",
-    "IngestionTableCleanException"
+    "InvalidFileFormatException"
 ]
