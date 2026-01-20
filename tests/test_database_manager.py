@@ -36,7 +36,7 @@ class TestDatabaseManagerConnection:
 
 
 class TestDatabaseManagerTableCreation:
-    """Test suite for table creation methods."""
+    """Test suite for table creation."""
     
     def test_create_ingestion_table_success(self, database_manager_mock):
         """Test successful table creation."""
